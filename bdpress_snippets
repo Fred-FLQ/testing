@@ -1,0 +1,95 @@
+// Modifier l’ordre des éléments de menu des groupes – BuddyPress 2.6
+
+function bpfr_group_tab_reorder() {
+    if ( ! bp_is_group() ) {
+        return;
+    }
+    // pour changer la position, modifiez la valeur numérique de la position
+    buddypress()->groups->nav->edit_nav( array( 'position' => 2 ), 'forum',       bp_current_item() );
+    buddypress()->groups->nav->edit_nav( array( 'position' => 3 ), 'members',         bp_current_item() );
+    buddypress()->groups->nav->edit_nav( array( 'position' => 1 ), 'send-invites',    bp_current_item() );
+    buddypress()->groups->nav->edit_nav( array( 'position' => 4 ), 'home',        bp_current_item() );
+    buddypress()->groups->nav->edit_nav( array( 'position' => 0 ), 'admin',           bp_current_item() );
+}
+add_action( 'bp_actions', 'bpfr_group_tab_reorder' );
+
+// Modifier l’ordre des éléments de menu des profils – BuddyPress 2.6
+
+function bpex_primary_nav_tabs_position() {
+    buddypress()->members->nav->edit_nav( array( 'position' => 4,   ), 'activity'       );
+    buddypress()->members->nav->edit_nav( array( 'position' => 5,   ), 'profile'        ); 
+    buddypress()->members->nav->edit_nav( array( 'position' => 7,   ), 'notifications'  ); 
+    buddypress()->members->nav->edit_nav( array( 'position' => 9,   ), 'messages'       );
+    buddypress()->members->nav->edit_nav( array( 'position' => 2,   ), 'friends'        );
+    buddypress()->members->nav->edit_nav( array( 'position' => 6,   ), 'groups'         );
+    buddypress()->members->nav->edit_nav( array( 'position' => 3,   ), 'forums'         );
+    buddypress()->members->nav->edit_nav( array( 'position' => 1,   ), 'settings'       );
+}
+add_action( 'bp_setup_nav', 'bpex_primary_nav_tabs_position', 999 );
+
+// Renommer des éléments de menu des profils – BuddyPress 2.6
+
+function bpfr_rename_profile_tabs() {
+   
+      buddypress()->members->nav->edit_nav( array( 'name' => __( 'My Buddy Forums', 'textdomain' ) ), 'forums' );
+      buddypress()->members->nav->edit_nav( array( 'name' => __( 'My Buddy Groups', 'textdomain' ) ), 'groups' );
+   
+}
+add_action( 'bp_actions', 'bpfr_rename_profile_tabs' );
+
+// Activité du site - Retirer des options du filtre de tri des activités
+
+function bpfr_remove_some_activity_filters( $filters, $context ) { 
+    /**
+          * @param string $context The current context. 'activity', 'member',
+      *                        'member_groups', 'group'.
+      *
+      * @return string HTML for <option> values.
+     */
+     
+    if ( 'activity' == $context ) {
+           // commentez les éléments que vous voulez afficher
+        $remove_these = array(
+        //  'New Members'           => __( 'New Members',        'buddypress' ),
+            'Profile Updates'       => __( 'Profile Updates',    'buddypress' ),
+        //  'Updates'               => __( 'Updates',            'buddypress' ),
+            'Friendships'           => __( 'Friendships',        'buddypress' ),
+            'Group Updates'         => __( 'Group Updates',      'buddypress' ),
+            'New Group'             => __( 'New Group',          'buddypress' ),
+            'Group Memberships'     => __( 'Group Memberships',  'buddypress' ),
+        //  'Posts'                 => __( 'Posts',              'buddypress' ),
+            'Comments'              => __( 'Comments',           'buddypress' ),
+        ); 
+         
+        foreach ( $filters as $key => $val ) {       
+            if ( in_array( $val, $remove_these ) )
+            unset( $filters[ $key ] );          
+         }
+    }
+     
+    return $filters; 
+} 
+add_filter( 'bp_get_activity_show_filters_options', 'bpfr_remove_some_activity_filters', 20, 2 );
+
+// Activité du profil - Retirer des options du filtre de tri des activités
+
+$remove_these = array(
+    'Updates'           => __( 'Updates',            'buddypress' ),
+    'Friendships'       => __( 'Friendships',        'buddypress' ),
+    'Group Updates'     => __( 'Group Updates',      'buddypress' ),
+    'New Group'         => __( 'New Group',          'buddypress' ),
+    'Group Memberships' => __( 'Group Memberships',  'buddypress' ),
+    'Posts'             => __( 'Posts',              'buddypress' ),
+    'Comments'          => __( 'Comments',           'buddypress' ),
+);
+
+// Activité du groupe - Retirer des options du filtre de tri des activités
+
+if ( 'group' == $context ) {
+ 
+$remove_these = array( 
+    'Updates'               => __( 'Updates',            'buddypress' ), 
+    'Group Updates'         => __( 'Group Updates',      'buddypress' ),
+    'Group Memberships'     => __( 'Group Memberships',  'buddypress' ),
+);
+
