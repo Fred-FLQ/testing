@@ -93,3 +93,36 @@ $remove_these = array(
     'Group Memberships'     => __( 'Group Memberships',  'buddypress' ),
 );
 
+// Show xProfile datas everywhere !
+
+function bpfr_field() {
+    global $bp;
+     
+    // is xprofile component active ?
+    if ( bp_is_active( 'xprofile' ) )
+     
+    // fetch the user_id
+    $current_user = wp_get_current_user();
+    $current_user_id = $current_user->ID;
+     
+    // fetch the data
+    $custom_field1 = xprofile_get_field_data('41', $current_user_id); // 41 is a field ID
+    $custom_field2 = xprofile_get_field_data('42', $current_user_id); // 42 is a field ID
+    $custom_field3 = xprofile_get_field_data('1', $current_user_id); // 1 is a field ID
+     
+    // show the data
+    echo '<div class="authorinfo">'. $custom_field1 . ' - '. $custom_field2 . ' <br/> '. $custom_field3 . '</div>';
+     
+}
+add_action( 'myfield', 'bpfr_field', 1 );
+
+// Supprimer un onglet de la page de profil
+
+function bpfr_remove_nav_tabs() {
+global $bp;
+     
+   bp_core_remove_nav_item( 'activity' );
+ 
+}
+add_action( 'bp_setup_nav', 'bpfr_remove_nav_tabs', 15 );
+
