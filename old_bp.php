@@ -1,3 +1,4 @@
+<?php
 	/**
 	 * Set tracking arguments for question and answer post type.
 	 */
@@ -27,3 +28,4 @@
 			'bp_activity_new_post_ms'  => __( '%1$s <a href="AP_CPT_LINK">answered</a> a question, on the site %3$s', 'anspress-question-answer' ),
 		) );
 	}
+?>
